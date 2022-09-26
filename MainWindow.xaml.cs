@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -7,29 +8,22 @@ namespace AsyncTestInWPF {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
-        private readonly System.Timers.Timer timer;
-        private int progress = default(int);
         public MainWindow() {
             InitializeComponent();
-            timer = new System.Timers.Timer(500);
-            timer.Start();
         }
 
         private async void btnLongRunningProcess_Click(object sender, RoutedEventArgs e) {
-            progress = 1;
+            // We don't even need dispatcher here
+            IProgress<int> progress = new Progress<int>(i => lblProgressReport.Content = i.ToString());
             lblProgressReport.Content = "Progress started";
-            timer.Elapsed += Timer_Elapsed;
             await Task.Run(() =>
             {
-                // long running process (like merging contract PDFs)
-                Thread.Sleep(5000);
+                for (int i = 0; i < 10; i++) {
+                    Thread.Sleep(1000);         // 10 cycles of a long-running operation
+                    progress.Report(i);
+                }
             });
             lblProgressReport.Content = "Done";
-            timer.Elapsed -= Timer_Elapsed;
-        }
-
-        private void Timer_Elapsed(object? sender, System.Timers.ElapsedEventArgs e) {
-            Dispatcher.BeginInvoke(() => lblProgressReport.Content = progress++);
         }
     }
 }
