@@ -24,11 +24,14 @@ namespace AsyncTestInWPF {
                 await Task.Run(() =>
                 {
                     for (int i = 0; i < 10; i++) {
-                        Thread.Sleep(1000);         // 10 cycles of a long-running operation
+                        Thread.Sleep(1000);
                         progress.Report(i);
+                        if (cts.Token.IsCancellationRequested) {
+                            // Do some cleanup work here if required
+                        }
                         cts.Token.ThrowIfCancellationRequested();
                     }
-                }, cts.Token);
+                }, cts.Token);  // Passing this token to task is optional, but it is useful: https://stackoverflow.com/questions/48312544/whats-the-benefit-of-passing-a-cancellationtoken-as-a-parameter-to-task-run
                 lblProgressReport.Content = "Done";
             }
             catch (Exception ex) {
