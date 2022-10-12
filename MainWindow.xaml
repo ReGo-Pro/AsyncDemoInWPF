@@ -27,11 +27,22 @@
             Progress = ---
         </Label>
 
-        <Button Width="180" Height="40"
-                Grid.Row="2" Grid.Column="1"
+        <StackPanel Height="100" Grid.Row="2" Grid.Column="1">
+            <Button Width="180" Height="40"
+                Margin="5"
                 Name="btnLongRunningProcess"
                 Click="btnLongRunningProcess_Click">
-            Start long running process
-        </Button>
+                Start long running process
+            </Button>
+            <Button Width="180" Height="40"
+                Margin="5"
+                Name="btnLongRunningProcessStop"
+                Click="btnLongRunningProcessStop_Click">
+                Cancel long running process
+            </Button>
+        </StackPanel>
+
+        
+        
     </Grid>
 </Window>
